@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-browser</TargetFramework>
+    <OutputType>Exe</OutputType>
+
+    <!-- No ICU: two megabytes of collation tables for a page whose only culture-sensitive operation
+         is formatting a clock. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!--
+        Trimmed. Untrimmed this page is 40 MB, of which System.Private.Xml and System.Data.Common are
+        three and a half that nothing here can reach.
+
+        Safe to trim because nothing in the library is found by name: the parser, the renderer and the
+        input encoding are ordinary calls, and the one string-keyed lookup — a font family — is
+        Avalonia's own and annotated as such. Trim warnings are reported rather than silenced, so if
+        that ever stops being true the build says so.
+    -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+
+    <!-- No WasmBuildNative and no threads. The renderer draws through Avalonia's own drawing context
+         and the work per frame is a screenful of glyph runs; relinking would cost a minute of
+         emscripten on every build and threads would cost a cross-origin-isolated page for nothing
+         anybody could measure. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AvaTerminal.Demo\AvaTerminal.Demo.csproj" />
+  </ItemGroup>
+
+</Project>

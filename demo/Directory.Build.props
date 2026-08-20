@@ -1,0 +1,17 @@
+<Project>
+    <!--
+        The switch that makes this copy of the demo build against the released package instead of
+        against a source tree that is not here. The same csproj file, unmodified, builds both ways —
+        see the comment beside the reference in AvaTerminal.Demo.csproj.
+    -->
+    <PropertyGroup>
+        <AvaTerminalFromPackage>true</AvaTerminalFromPackage>
+        <AvaTerminalVersion>12.1.0-preview.1</AvaTerminalVersion>
+        <AvaloniaVersion>12.1.0</AvaloniaVersion>
+
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+</Project>

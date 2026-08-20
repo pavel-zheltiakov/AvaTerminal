@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+
+    <!-- Built for net8.0, because that is what the package targets and this demo exists to prove the
+         package works there. Run on whatever runtime the machine actually has: a developer with only
+         .NET 10 installed should not have to install an older one to look at a sample. -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The head chooses the windowing backend, which is why the library never references this. -->
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AvaTerminal.Demo\AvaTerminal.Demo.csproj" />
+  </ItemGroup>
+
+</Project>

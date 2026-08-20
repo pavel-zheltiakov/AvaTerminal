@@ -20,6 +20,7 @@
   <span class="tag">12.1.0-preview.1 · preview</span>
   <div class="links">
     <a href="index.html">Home</a>
+    <a href="demo/">Demo</a>
     <a href="documentation.html">Documentation</a>
     <a href="guide.html">Guide</a>
     <a href="releases.html">Releases</a>
@@ -429,7 +430,8 @@ terminal.Input += bytes =&gt;
     The escape sequences all work, because the engine is real: colour the answers with
     <code>ESC [ 32 m</code>, clear with <code>ESC [ 2 J</code>, draw a full-screen view on the
     alternate screen with <code>ESC [ ? 1049 h</code>.
-    <code>samples/AvaTerminal.Hosted</code> is this scenario, finished.
+    The demo's <code>MockShell.cs</code> is this scenario, finished — and it is what the
+    <a href="demo/">browser demo</a> runs.
   </p>
   <div class="note">
     <strong>A byte is not a character.</strong> The sketch above appends <code>(char)b</code>, which
@@ -560,6 +562,7 @@ void AddTerminal(string title)
   </p>
   <p class="thin">
     <a href="index.html">Home</a> ·
+    <a href="demo/">Demo</a> ·
     <a href="documentation.html">Documentation</a> ·
     <a href="guide.html">Guide</a> ·
     <a href="releases.html">Releases</a> ·

@@ -6,6 +6,7 @@ works — no shell installed, no configuration, no wiring.
 A VT/xterm parser, a cell renderer, keyboard and mouse encoding, a pty, and a shell of its own that
 finds programs on `PATH` and runs them. One assembly, one dependency.
 
+**[Try it in your browser →](https://pavel-zheltiakov.github.io/AvaTerminal/demo/)** ·
 **[Documentation, guide and API reference →](https://pavel-zheltiakov.github.io/AvaTerminal/)**
 
 ```
@@ -29,9 +30,29 @@ install, and [the releases](https://github.com/pavel-zheltiakov/AvaTerminal/rele
 
 | | |
 |---|---|
-| `docs/` | The site, served by GitHub Pages. Home, the documentation, the guide and the releases page. |
+| `docs/` | The site, served by GitHub Pages. Home, the demo, the documentation, the guide and the releases page. |
+| `docs/demo/` | The demo compiled to WebAssembly — what the Demo link opens. |
+| `demo/` | The demo's source: the shared view, the desktop head and the browser head, restoring `AvaTerminal` from nuget.org. |
 | `LICENSE.md` | Freeware, commercial use included. |
 | `THIRD-PARTY-NOTICES.md` | What the library builds on — a shorter list than you would expect. |
+
+## Running the demo
+
+Nothing to install: **[open it in your browser](https://pavel-zheltiakov.github.io/AvaTerminal/demo/)**.
+
+Or run it on your machine, where it has a pty and can therefore run real programs:
+
+```
+git clone https://github.com/pavel-zheltiakov/AvaTerminal.git
+cd AvaTerminal/demo
+dotnet run --project AvaTerminal.Demo.Desktop
+```
+
+Every panel in it is a property or an event from the documentation: the font, the theme, the console
+size, what to run, what to send, what to feed, and a log of everything the control raises. The
+browser build offers one session — a shell written in the demo, answering `Input` with `Feed`, with no
+process and no pty — because that is what a tab can do, and it is a mode the library supports
+everywhere.
 
 ## Twelve lines
 

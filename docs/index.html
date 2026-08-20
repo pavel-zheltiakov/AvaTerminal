@@ -20,6 +20,7 @@
   <span class="tag">12.1.0-preview.1 · preview</span>
   <div class="links">
     <a href="index.html">Home</a>
+    <a href="demo/">Demo</a>
     <a href="documentation.html">Documentation</a>
     <a href="guide.html">Guide</a>
     <a href="releases.html">Releases</a>
@@ -75,13 +76,31 @@
     </p>
 
     <div class="hero-actions">
-      <a class="button primary" href="guide.html">Start with step one</a>
+      <a class="button primary" href="demo/">Try it in your browser</a>
+      <a class="button" href="guide.html">Start with step one</a>
       <a class="button" href="documentation.html">Documentation</a>
       <a class="button" href="releases.html">Releases</a>
     </div>
   </div>
 </section>
 </div>
+
+<section class="stage">
+  <h2>The demo is the documentation, running</h2>
+  <p class="lede">
+    Every panel in it is a property or an event from these pages: the font, the theme, the console
+    size, what to run, what to send, what to feed, and a log of everything the control raises.
+    <a href="demo/">Open it in your browser</a> — it needs nothing installed.
+  </p>
+  <p class="stage-note">
+    <strong>A browser tab has no pty</strong>, so the hosted demo runs the library's documented
+    "terminal with no process" mode: <code>AutoStart="False"</code>, and a shell written in about two
+    hundred lines of the demo answering <code>Input</code> with <code>Feed</code>. The parser, the
+    renderer and the input encoding on that page are the real ones. Run the same demo on your machine
+    — <code>dotnet run --project demo/AvaTerminal.Demo.Desktop</code> — and the session picker gains
+    the built-in shell, your login shell, and <code>top</code> on a real pty.
+  </p>
+</section>
 
 <section class="stage">
   <h2>Typing <code>ls</code> runs <code>/bin/ls</code></h2>
@@ -264,6 +283,7 @@ channel.Received += bytes =&gt; terminal.Feed(bytes);      // what the far end p
   </p>
   <p class="thin">
     <a href="index.html">Home</a> ·
+    <a href="demo/">Demo</a> ·
     <a href="documentation.html">Documentation</a> ·
     <a href="guide.html">Guide</a> ·
     <a href="releases.html">Releases</a> ·

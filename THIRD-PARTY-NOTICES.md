@@ -28,11 +28,19 @@ Avalonia rasterises the glyphs, which is the one thing above the kernel that is 
 decides which glyph goes in which cell at which pixel, and Avalonia's drawing context turns an outline
 into pixels.
 
-## Used by the samples only
+## Used by the demo only
 
 | Component | Version | Licence |
 | --- | --- | --- |
 | [Avalonia.Desktop](https://github.com/AvaloniaUI/Avalonia) | 12.1.0 | MIT |
+| [Avalonia.Browser](https://github.com/AvaloniaUI/Avalonia) | 12.1.0 | MIT |
+| [Avalonia.Themes.Fluent](https://github.com/AvaloniaUI/Avalonia) | 12.1.0 | MIT |
+| [Avalonia.Fonts.Inter](https://github.com/AvaloniaUI/Avalonia) | 12.1.0 | MIT |
+| [JetBrains Mono NL](https://github.com/JetBrains/JetBrainsMono) | 2.304 | SIL Open Font License 1.1 |
+
+JetBrains Mono is embedded in the demo, not in the library — a browser tab has no system monospace
+face, and shipping one inside the package would put a megabyte of font in every consumer's build for
+something most platforms already have. Its licence is `demo/AvaTerminal.Demo/Fonts/OFL.txt`.
 
 `Avalonia.Desktop` is referenced by the sample applications and **not** by the library. A control does
 not get to decide which windowing backend the application it is dropped into uses.

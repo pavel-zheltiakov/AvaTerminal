@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <!-- The demo's own chrome — labels, buttons, headings. A browser tab has no system fonts at all,
+         so without this the panels beside the terminal would have nothing to draw with. -->
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+
+  <!--
+      The terminal face, embedded rather than looked for. A browser tab has no Menlo and no Consolas,
+      and a terminal in a proportional font is a terminal with drifting columns. JetBrains Mono NL is
+      under the SIL Open Font License; Fonts/OFL.txt travels with it.
+
+      This is also the answer to "how do I use AvaTerminal where there are no system fonts": embed one
+      and hand it to TerminalFont.Resolve as an avares:// family. See MainView.SetFont.
+  -->
+  <ItemGroup>
+    <AvaloniaResource Include="Fonts\*.ttf" />
+    <None Include="Fonts\OFL.txt" />
+  </ItemGroup>
+
+  <!--
+      One demo, two ways of getting the control. In this repository it is the project next door, so an
+      edit to the library is visible in the demo immediately. In the public repository there is no
+      src/, and Directory.Build.props there sets AvaTerminalFromPackage, so the very same csproj
+      restores the released package from nuget.org instead — which is the only honest way to find out
+      whether what was published actually works.
+  -->
+  <ItemGroup Condition="'$(AvaTerminalFromPackage)' != 'true'">
+    <ProjectReference Include="..\..\src\AvaTerminal\AvaTerminal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(AvaTerminalFromPackage)' == 'true'">
+    <PackageReference Include="AvaTerminal" Version="$(AvaTerminalVersion)" />
+  </ItemGroup>
+
+</Project>
