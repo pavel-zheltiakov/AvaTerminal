@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — AvaTerminal</title>
+<meta name="description" content="A step-by-step guide to AvaTerminal: put one on a form, run a program, size it, theme it, drive it from code, and use it with no process at all. With worked scenarios.">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="header.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="page.css">
+</head>
+<body data-page="guide">
+
+<!--#header-->
+<!-- The shared header. Same markup, same class names and the same header.css as the other sites in
+     this family. Rewritten by tools/site-parts.py — edit it there, not here. -->
+<header class="bar"><nav class="nav" aria-label="Site">
+  <a class="brand" href="index.html" title="Home">Ava<span>Terminal</span></a>
+  <span class="tag">12.1.0-preview.1 · preview</span>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="documentation.html">Documentation</a>
+    <a href="guide.html">Guide</a>
+    <a href="releases.html">Releases</a>
+  </div>
+  <div class="links tools">
+    <details class="fb">
+      <summary>Feedback</summary>
+      <div class="fb-pop">
+        <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg><span><b>GitHub Issues</b><small>A bug, a missing escape sequence, a question — in the open, where the answer helps the next person.</small></span></a>
+      </div>
+    </details>
+    <a class="nav-ico" href="https://github.com/pavel-zheltiakov/AvaTerminal" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg></a>
+  </div>
+</nav></header>
+<!--#/header-->
+
+<section class="doc">
+
+<nav class="toc" aria-label="On this page">
+  <h2>Steps</h2>
+  <ol>
+    <li><a href="#one">Put one on a form</a></li>
+    <li><a href="#two">What just happened</a></li>
+    <li><a href="#three">Run a program</a></li>
+    <li><a href="#four">Give it a size</a></li>
+    <li><a href="#five">Make it look right</a></li>
+    <li><a href="#six">Talk to it from code</a></li>
+    <li><a href="#seven">Know what it is doing</a></li>
+    <li><a href="#hosted">A terminal with no process</a></li>
+  </ol>
+  <h2 class="toc-more">Scenarios</h2>
+  <ol>
+    <li><a href="#s-build">A build output pane</a></li>
+    <li><a href="#s-ssh">An SSH client</a></li>
+    <li><a href="#s-repl">Your own REPL</a></li>
+    <li><a href="#s-agent">Running an agent</a></li>
+    <li><a href="#s-tabs">Many terminals</a></li>
+  </ol>
+  <h2 class="toc-more"><a href="#trouble">Troubleshooting</a></h2>
+</nav>
+
+<div class="doc-body">
+
+<section>
+  <h1 class="guide-title">A terminal in your application</h1>
+  <p class="lede">
+    This assumes you have written an Avalonia application and have never written a terminal. It takes
+    about ten minutes, and the first step is one line.
+  </p>
+</section>
+
+<section id="one" class="step">
+  <h2>Put one on a form</h2>
+<pre><code>dotnet add package AvaTerminal --prerelease</code></pre>
+
+  <p>In XAML:</p>
+<pre><code>&lt;Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ava="clr-namespace:AvaTerminal;assembly=AvaTerminal"
+        x:Class="MyApp.MainWindow"
+        Width="900" Height="560"&gt;
+    &lt;ava:AvaTerminal /&gt;
+&lt;/Window&gt;</code></pre>
+
+  <p>Or from code, which is the same thing:</p>
+<pre><code>using AvaTerminal;
+
+public class MainWindow : Window
+{
+    public MainWindow()
+    {
+        Width = 900;
+        Height = 560;
+        Content = new AvaTerminal();
+    }
+}</code></pre>
+
+  <p>
+    Run it. You have a terminal: type <code>ls</code> and press Return, and you will get a directory
+    listing. Type <code>vim</code> and you will get vim.
+  </p>
+
+  <div class="note">
+    <strong>Nothing was installed and nothing was configured.</strong> In particular no
+    <code>zsh</code>, no <code>bash</code> and no <code>cmd.exe</code> is involved — see the next
+    step for what actually ran <code>ls</code>.
+  </div>
+</section>
+
+<section id="two" class="step">
+  <h2>What just happened</h2>
+  <p>
+    Worth two minutes, because "terminal" is used for three different things and knowing which is
+    which makes the rest of this guide obvious rather than magic.
+  </p>
+
+  <table>
+    <tr><th></th><th>What it is</th><th>Whose</th></tr>
+    <tr>
+      <td><strong>a pty</strong></td>
+      <td>A kernel object — a pipe with terminal semantics: echo, line editing, Ctrl-C&nbsp;to&nbsp;SIGINT, a window size. It renders nothing and parses nothing.</td>
+      <td>the kernel's</td>
+    </tr>
+    <tr>
+      <td><strong>a shell</strong></td>
+      <td>An ordinary interactive <em>program</em> that turns a typed line into a running one. Not a terminal, and — here — optional.</td>
+      <td><code>BuiltinShell</code>, or one you name</td>
+    </tr>
+    <tr>
+      <td><strong>a terminal emulator</strong></td>
+      <td>Parses the byte stream into a screen, draws that screen, and encodes keystrokes back into bytes.</td>
+      <td><code>AvaTerminal</code></td>
+    </tr>
+  </table>
+
+  <p>
+    So when you typed <code>ls</code>: the control's shell read the line, searched <code>PATH</code>
+    for a file called <code>ls</code>, found <code>/bin/ls</code>, opened a pty, started that program
+    on it, and fed everything the program printed into the parser. The parser turned the bytes into
+    cells; the renderer drew them.
+  </p>
+
+  <p>
+    <code>ls</code> is 150&nbsp;KB of somebody else's program. No shell anywhere has it built in, and
+    neither does this one.
+  </p>
+</section>
+
+<section id="three" class="step">
+  <h2>Run a program instead</h2>
+  <p>Most applications embedding a terminal do not want a shell at all. They want one program.</p>
+
+<pre><code>var terminal = new AvaTerminal();
+terminal.Start("/usr/bin/ssh", ["build-host"]);</code></pre>
+
+  <p>or, entirely in XAML:</p>
+<pre><code>&lt;ava:AvaTerminal Command="/usr/bin/top" WorkingDirectory="/src/app" /&gt;</code></pre>
+
+  <div class="note warn">
+    <strong><code>Command</code> is an absolute path.</strong> There is no <code>PATH</code> search
+    here and no shell parsing: a control that split its own command line would be a second, worse
+    shell. If you have a name rather than a path, ask for the path:
+<pre class="in-note"><code>if (CommandResolver.TryResolve("git", null, out var path, out var why))
+    terminal.Start(path, ["log", "--oneline"]);
+else
+    ShowError(why);</code></pre>
+  </div>
+
+  <p>
+    If you want the user's own shell — their aliases, their prompt, their completion — ask for it by
+    name:
+  </p>
+<pre><code>terminal.StartSystemShell();     // $SHELL, or /bin/sh</code></pre>
+</section>
+
+<section id="four" class="step">
+  <h2>Give it a size</h2>
+  <p>
+    By default the console follows the control: make the window bigger and the program is told it has
+    more room. That is what you want for a terminal that <em>is</em> the window.
+  </p>
+  <p>Sometimes it is not. A fixed-format report, a transcript, a widget in a panel:</p>
+<pre><code>&lt;ava:AvaTerminal AutoSize="False" Columns="80" Rows="24" /&gt;</code></pre>
+  <p>
+    Now the console is 80x24 whatever the control's rectangle turns out to be. Writing to
+    <code>Columns</code> or <code>Rows</code> is what turns the fitting off — the property is both
+    the question and the answer.
+  </p>
+  <p>
+    Read them at any time to find out what the console currently is:
+  </p>
+<pre><code>terminal.ScreenChanged += () =&gt;
+    status.Text = $"{terminal.Columns}x{terminal.Rows}";</code></pre>
+</section>
+
+<section id="five" class="step">
+  <h2>Make it look right</h2>
+
+  <h3>The font</h3>
+<pre><code>terminal.Font = TerminalFont.Resolve("JetBrains Mono", "Fira Code", "Menlo");
+terminal.TerminalFontSize = 13;</code></pre>
+  <p>
+    The first family that is actually installed wins; if none are, it falls back through a built-in
+    list ending somewhere every platform has. A cell is measured from the face's own metrics and
+    snapped to a whole device pixel — that snapping is why a wall of text has no grey seams in it.
+  </p>
+
+  <h3>The colours</h3>
+<pre><code>terminal.TerminalTheme = Theme.Dark;   // the default: xterm's own sixteen colours</code></pre>
+  <p>
+    Or build one. The sixteen ANSI colours are yours; the other 240 are computed from the standard
+    cube and grey ramp.
+  </p>
+<pre><code>var ansi = new Rgba[16] { /* ... */ };
+
+terminal.TerminalTheme = new Theme(
+    foreground:   Rgba.FromHex(0xE4E4E4),
+    background:   Rgba.FromHex(0x101216),
+    cursor:       Rgba.FromHex(0x7FD8A0),
+    cursorText:   Rgba.FromHex(0x101216),
+    selection:    Rgba.FromHex(0x2E4A6B),
+    ansi16:       ansi,
+    boldIsBright: true,
+    dimAmount:    0.45);</code></pre>
+  <div class="note">
+    <strong>Leave <code>Background</code> alone unless you mean it.</strong> It defaults to
+    <code>null</code>, which means "the theme's background" — set it and you have overridden the
+    theme for that one colour.
+  </div>
+</section>
+
+<section id="six" class="step">
+  <h2>Talk to it from code</h2>
+
+  <h4>Type into it</h4>
+<pre><code>terminal.Send("git status\r");        // \r is Return</code></pre>
+
+  <h4>Put something on the screen without sending it</h4>
+<pre><code>terminal.Feed("\u001b[33mwarning:\u001b[0m nothing is running\r\n"u8);</code></pre>
+
+  <h4>Watch what the user types</h4>
+<pre><code>terminal.Input += bytes =&gt; recorder.Write(bytes.Span);</code></pre>
+  <p>
+    <code>Send</code> deliberately does not raise <code>Input</code>. If it did, an application that
+    broadcast one terminal's input to the others would have written a loop.
+  </p>
+
+  <h4>Interrupt it</h4>
+<pre><code>terminal.Signal(PtySignal.Int);       // what Ctrl-C does
+terminal.Signal(PtySignal.Term);      // ask it to stop
+terminal.Stop();                      // end it now</code></pre>
+</section>
+
+<section id="seven" class="step">
+  <h2>Know what it is doing</h2>
+<pre><code>terminal.Exited        += code  =&gt; status.Text = $"exited with {code}";
+terminal.TitleChanged  += title =&gt; tab.Header  = title;
+terminal.Bell          += ()    =&gt; tab.Flash();
+terminal.ScreenChanged += ()    =&gt; UpdateStatusBar();</code></pre>
+
+  <p>
+    <code>Exited</code> arrives <strong>after</strong> the program's last output, and after the
+    control has torn down: <code>IsRunning</code> is already <code>false</code> when your handler
+    runs. That ordering is the half worth relying on — the last thing a program prints is regularly
+    the thing the user needs.
+  </p>
+
+  <p>And you can read the screen at any time:</p>
+<pre><code>var screen = terminal.Screen;
+
+if (screen.IsAlternateScreen)         // vim or top is up
+    HideTheFindBar();
+
+var text = screen.GetScreenText();    // everything visible</code></pre>
+  <div class="note">
+    <strong>The screen is a model, not a transcript.</strong> A program that redraws a progress bar
+    ten thousand times leaves one row. If you want a transcript, record what you fed it.
+  </div>
+</section>
+
+<section id="hosted" class="step">
+  <h2>A terminal with no process</h2>
+  <p class="lede">
+    This is the step worth reading even if you skipped the rest. <code>AvaTerminal</code> is the
+    <strong>terminal</strong> — a screen and a keyboard. Pointing it at a local program is optional.
+  </p>
+
+<pre><code>var terminal = new AvaTerminal { AutoStart = false };   // spawns nothing, opens no pty
+
+terminal.Input    += bytes =&gt; channel.Send(bytes);      // what the user typed
+channel.Received  += bytes =&gt; terminal.Feed(bytes);     // what the far end printed</code></pre>
+
+  <p>
+    Six lines, and that is a complete terminal over an SSH channel, a Docker exec stream, a serial
+    port, a WebSocket, a recording being replayed — or an interpreter running in the same process.
+  </p>
+  <p>
+    It is also the mode with no platform in it: starting a program is the one thing that needs a pty,
+    so a terminal that starts nothing never reaches that code.
+  </p>
+  <div class="note">
+    <strong>Answers are handled for you.</strong> When the far end asks the terminal a question —
+    "where is the cursor", "what are you" — the answer comes out through <code>Input</code> along
+    with the keystrokes, so forwarding <code>Input</code> forwards a complete terminal.
+  </div>
+</section>
+
+<section>
+  <h2 class="rule-above">Scenarios</h2>
+  <p class="lede">Five things people actually build with this, in the shortest form that works.</p>
+</section>
+
+<section id="s-build">
+  <h3>A build output pane</h3>
+  <p>
+    A read-only terminal that shows a compiler's output, in colour, with its progress bars working —
+    which is the whole reason to use a terminal rather than a <code>TextBox</code>.
+  </p>
+<pre><code>var output = new AvaTerminal
+{
+    AutoStart = false,          // nothing runs until the user presses Build
+    IsHitTestVisible = false,   // read-only: no keyboard, no mouse reporting
+};
+
+async Task BuildAsync()
+{
+    output.Stop();
+    output.Feed("\u001b[2J\u001b[H"u8);            // clear, home
+
+    if (!CommandResolver.TryResolve("dotnet", projectDirectory, out var path, out var why))
+    {
+        output.Feed(Encoding.UTF8.GetBytes($"{why}\r\n"));
+        return;
+    }
+
+    var done = new TaskCompletionSource&lt;int&gt;();
+    output.Exited += code =&gt; done.TrySetResult(code);
+    output.Start(path, ["build", "-c", "Release"], projectDirectory);
+
+    ExitCode = await done.Task;
+}</code></pre>
+  <div class="note">
+    A pty is what makes this worth doing. <code>dotnet build</code>, <code>cargo</code>,
+    <code>npm</code> and <code>make</code> all ask the kernel whether their output is a terminal, and
+    give you colour and progress only when it is. Piping them into a text box gets you the plain,
+    dull version.
+  </div>
+</section>
+
+<section id="s-ssh">
+  <h3>An SSH client</h3>
+  <p>Two ways, and the first one is usually the right one.</p>
+
+  <h4>Run the system's <code>ssh</code></h4>
+<pre><code>terminal.Start("/usr/bin/ssh", ["-t", "user@host"]);</code></pre>
+  <p>
+    Everything works, including the parts nobody wants to reimplement: keys, agents,
+    <code>~/.ssh/config</code>, jump hosts, host key prompts. The terminal is local and the pty is
+    local; <code>ssh</code> deals with the far end.
+  </p>
+
+  <h4>Or hold the connection yourself</h4>
+<pre><code>var terminal = new AvaTerminal { AutoStart = false };
+
+var stream = await sshClient.OpenShellAsync(
+    columns: terminal.Columns, rows: terminal.Rows);
+
+terminal.Input += bytes =&gt; stream.Write(bytes.Span);
+
+_ = Task.Run(async () =&gt;
+{
+    var buffer = new byte[16 * 1024];
+    int n;
+    while ((n = await stream.ReadAsync(buffer)) &gt; 0)
+    {
+        var chunk = buffer[..n];
+        await Dispatcher.UIThread.InvokeAsync(() =&gt; terminal.Feed(chunk));
+    }
+});
+
+// and tell the far end when the window changes
+terminal.ScreenChanged += () =&gt; stream.SetSize(terminal.Columns, terminal.Rows);</code></pre>
+  <div class="note warn">
+    <strong>Feed on the UI thread.</strong> The control is an Avalonia control; a read loop on a
+    background thread has to marshal. The local pty path does this for you — a channel you own does
+    not.
+  </div>
+</section>
+
+<section id="s-repl">
+  <h3>Your own REPL, in your own process</h3>
+  <p>
+    No pty, no child process, nothing to install. The terminal is a screen and a keyboard, and you
+    are the program.
+  </p>
+<pre><code>var terminal = new AvaTerminal { AutoStart = false };
+var line = new StringBuilder();
+
+terminal.Feed("Type an expression.\r\n&gt; "u8);
+
+terminal.Input += bytes =&gt;
+{
+    foreach (var b in bytes.Span)
+    {
+        switch (b)
+        {
+            case 0x0d:                                   // Return
+                terminal.Feed("\r\n"u8);
+                var answer = Evaluate(line.ToString());
+                terminal.Feed(Encoding.UTF8.GetBytes($"{answer}\r\n&gt; "));
+                line.Clear();
+                break;
+
+            case 0x7f when line.Length &gt; 0:              // Backspace
+                line.Length--;
+                terminal.Feed("\b \b"u8);
+                break;
+
+            case &gt;= 0x20:
+                line.Append((char)b);
+                terminal.Feed([b]);                      // echo
+                break;
+        }
+    }
+};</code></pre>
+  <p>
+    The escape sequences all work, because the engine is real: colour the answers with
+    <code>ESC [ 32 m</code>, clear with <code>ESC [ 2 J</code>, draw a full-screen view on the
+    alternate screen with <code>ESC [ ? 1049 h</code>.
+    <code>samples/AvaTerminal.Hosted</code> is this scenario, finished.
+  </p>
+  <div class="note">
+    <strong>A byte is not a character.</strong> The sketch above appends <code>(char)b</code>, which
+    is right only for ASCII — anything else arrives as two to four bytes of UTF-8. Decode with a
+    stateful <code>Encoding.UTF8.GetDecoder()</code>, because the halves of one keystroke can arrive
+    in separate calls.
+  </div>
+</section>
+
+<section id="s-agent">
+  <h3>Running an agent, or any long-lived TUI</h3>
+  <p>
+    A coding agent, <code>htop</code>, <code>lazygit</code> — programs that draw a full screen, want
+    every keystroke, and run for hours.
+  </p>
+<pre><code>var terminal = new AvaTerminal();
+terminal.Start(agentPath, ["--project", projectDirectory], projectDirectory);
+
+// A full-screen program is up: the application's own shortcuts should get out of the way.
+terminal.ScreenChanged += () =&gt;
+{
+    var fullScreen = terminal.Screen.IsAlternateScreen;
+    findShortcut.IsEnabled = !fullScreen;
+};
+
+// It says what it is doing in the title.
+terminal.TitleChanged += title =&gt; tab.Header = title;
+
+// And it rings the bell when it wants you.
+terminal.Bell += () =&gt; tab.NeedsAttention = true;</code></pre>
+  <div class="note">
+    <strong>Do not resize it casually.</strong> On the alternate screen there is no scrollback to
+    restore from, so a shrink and re-grow destroys content permanently. If your layout moves a lot —
+    a panel that collapses, a sidebar that slides — pin the size with <code>AutoSize="False"</code>
+    and let the control letterbox the console instead.
+  </div>
+</section>
+
+<section id="s-tabs">
+  <h3>Many terminals</h3>
+<pre><code>var tabs = new TabControl();
+
+void AddTerminal(string title)
+{
+    var terminal = new AvaTerminal();
+    var item = new TabItem { Header = title, Content = terminal };
+
+    terminal.TitleChanged += t =&gt; item.Header = t;
+    terminal.Exited += _ =&gt; tabs.Items.Remove(item);
+
+    tabs.Items.Add(item);
+}</code></pre>
+  <p>
+    Each control owns its own screen, its own process and its own cursor blink; nothing is shared
+    between them. Closing a tab takes the control out of the visual tree, which stops the process and
+    releases the screen — an application that opens and closes fifty tabs costs fifty terminals while
+    they are open and none afterwards.
+  </p>
+  <div class="note">
+    A <code>TabControl</code> that recycles the content of an unselected tab would detach the control
+    and stop the program. Either keep the controls alive yourself and swap them into a
+    <code>ContentControl</code>, or make sure the tab hides its content rather than detaching it.
+  </div>
+</section>
+
+<section id="trouble">
+  <h2 class="rule-above">Troubleshooting</h2>
+
+  <h4>Nothing happens when I type</h4>
+  <p>
+    The control needs the keyboard. It is <code>Focusable</code>, but something has to give it focus:
+    click it, or call <code>terminal.Focus()</code> once the window is shown.
+  </p>
+
+  <h4>The program says the terminal is too small, or draws off the edge</h4>
+  <p>
+    Read <code>terminal.Columns</code> and <code>terminal.Rows</code> — that is what the program was
+    told. If you are driving a remote channel yourself, you have to forward the size when it changes;
+    the local pty path does it for you.
+  </p>
+
+  <h4><code>Start</code> throws <code>PtyException</code></h4>
+  <p>
+    <code>Command</code> is an absolute path. Use <code>CommandResolver.TryResolve</code> to turn a
+    name into one, or use the built-in shell, which does that itself.
+  </p>
+
+  <h4>Colours are wrong in one program</h4>
+  <p>
+    Check whether it is deciding based on <code>TERM</code>. If a program wants something specific,
+    pass it:
+  </p>
+<pre><code>terminal.Start(path, args, cwd,
+    new Dictionary&lt;string, string&gt; { ["TERM"] = "xterm-256color" });</code></pre>
+
+  <h4>It does not build on Windows</h4>
+  <p>
+    It does not run on Windows yet. The pty layer is <code>posix_spawn</code> and
+    <code>openpty</code>; Windows needs a ConPTY implementation of <code>IPtyHost</code>, which is
+    one class and no change above it. The parser, the renderer and the input encoding are already
+    platform-free.
+  </p>
+</section>
+
+<section>
+  <h2>Where next</h2>
+  <div class="cards">
+    <div class="card">
+      <h3><a href="documentation.html">Documentation</a></h3>
+      <p>Every property, event and method, with the rules about threading, lifetime and sizing.</p>
+    </div>
+    <div class="card">
+      <h3><a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues">Issues</a></h3>
+      <p>A missing escape sequence, a program that draws wrong, a question. In the open, where the answer helps the next person.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+</section>
+
+<!--#footer-->
+<footer>
+  <p>
+    <strong>AvaTerminal</strong> — a terminal emulator control for
+    <a href="https://avaloniaui.net/">Avalonia</a>. Freeware; see the licence in the repository for the
+    exact terms.
+  </p>
+  <p class="thin">
+    <a href="index.html">Home</a> ·
+    <a href="documentation.html">Documentation</a> ·
+    <a href="guide.html">Guide</a> ·
+    <a href="releases.html">Releases</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal">GitHub</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues">Issues</a> ·
+    <a href="https://www.nuget.org/packages/AvaTerminal">NuGet</a>
+  </p>
+</footer>
+<!--#/footer-->
+
+<script src="site.js" defer></script>
+</body>
+</html>

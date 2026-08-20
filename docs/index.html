@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AvaTerminal — a terminal emulator control for Avalonia</title>
+<meta name="description" content="A terminal emulator control for Avalonia. Drop it on a form and it works: a VT/xterm parser, a cell renderer, a pty, and a built-in shell that finds programs on PATH — no zsh, bash or cmd.exe required.">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="header.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="page.css">
+</head>
+<body data-page="home">
+
+<!--#header-->
+<!-- The shared header. Same markup, same class names and the same header.css as the other sites in
+     this family. Rewritten by tools/site-parts.py — edit it there, not here. -->
+<header class="bar"><nav class="nav" aria-label="Site">
+  <a class="brand" href="index.html" title="Home">Ava<span>Terminal</span></a>
+  <span class="tag">12.1.0-preview.1 · preview</span>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="documentation.html">Documentation</a>
+    <a href="guide.html">Guide</a>
+    <a href="releases.html">Releases</a>
+  </div>
+  <div class="links tools">
+    <details class="fb">
+      <summary>Feedback</summary>
+      <div class="fb-pop">
+        <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg><span><b>GitHub Issues</b><small>A bug, a missing escape sequence, a question — in the open, where the answer helps the next person.</small></span></a>
+      </div>
+    </details>
+    <a class="nav-ico" href="https://github.com/pavel-zheltiakov/AvaTerminal" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg></a>
+  </div>
+</nav></header>
+<!--#/header-->
+
+<div class="hero-wrap">
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">Freeware · commercial use included</p>
+    <h1>A terminal you can drop on a form.</h1>
+    <p class="lede">
+      A control for Avalonia that is a real terminal: it parses what a program prints, draws the
+      screen, and sends back what the user types. It brings its own shell, so it works on a machine
+      where nobody has installed <code>zsh</code> — and it works with no shell at all, if what is on
+      the far end is an SSH channel or an interpreter in your own process.
+    </p>
+
+    <div class="get">
+      <div class="get-row">
+        <span class="get-label">Install the package</span>
+        <code>dotnet add package AvaTerminal --prerelease</code>
+        <button class="copy" type="button" data-copy title="Copy to the clipboard">
+          <span class="copy-label">Copied</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6.4L14.6 2H9zm0 2h4v4h4v6H9V4zM5 6v12a2 2 0 0 0 2 2h9v-2H7V6H5z"/></svg>
+          <span class="sr">Copy</span>
+        </button>
+      </div>
+      <div class="get-row">
+        <span class="get-label">Put one on a form</span>
+        <code>&lt;ava:AvaTerminal /&gt;</code>
+        <button class="copy" type="button" data-copy title="Copy to the clipboard">
+          <span class="copy-label">Copied</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6.4L14.6 2H9zm0 2h4v4h4v6H9V4zM5 6v12a2 2 0 0 0 2 2h9v-2H7V6H5z"/></svg>
+          <span class="sr">Copy</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="beta-note">
+      <strong>This is a preview.</strong> The parser, the renderer and the shell work; the API may
+      still move before 12.1.0 final.
+    </p>
+
+    <div class="hero-actions">
+      <a class="button primary" href="guide.html">Start with step one</a>
+      <a class="button" href="documentation.html">Documentation</a>
+      <a class="button" href="releases.html">Releases</a>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="stage">
+  <h2>Typing <code>ls</code> runs <code>/bin/ls</code></h2>
+  <p class="lede">
+    No shell is involved in the session below. The control searched <code>PATH</code> itself, found
+    the program, ran it on a pty of its own, and parsed what came back.
+  </p>
+
+  <!-- Captured from the library, not typed out: tests/AvaTerminal.Tests/SiteTranscript.cs starts a
+       BuiltinShell in a temporary directory, types these three lines and writes down what came out.
+       A page showing output the program has never produced is a page that goes quietly wrong. -->
+  <div class="term">
+    <div class="term-bar"><i></i><i></i><i></i><span>AvaTerminal</span></div>
+<pre><span class="dim">AvaTerminal built-in shell — no external shell is involved.
+Programs are found on PATH and run on a pty. Try: ls, pwd, cd, env, vim, top.
+Builtins: cd, pwd, exit, help. Everything else is a program on disk.</span>
+
+<span class="dir">project</span> <span class="sig">$</span> ls -la
+total 0
+drwx------      5 you  staff      160 Aug 21 06:15 .
+drwx------@    43 you  staff     1376 Aug 21 06:15 ..
+-rw-r--r--      1 you  staff        0 Aug 21 06:15 Program.cs
+-rw-r--r--      1 you  staff        0 Aug 21 06:15 README.md
+drwxr-xr-x      2 you  staff       64 Aug 21 06:15 src
+<span class="dir">project</span> <span class="sig">$</span> pwd
+/tmp/project
+<span class="dir">project</span> <span class="sig">$</span> nosuchprogram
+<span class="err">Command 'nosuchprogram' not found on PATH.</span>
+<span class="dir">project</span> <span class="sig">$</span> <span class="dim">▌</span></pre>
+  </div>
+  <p class="stage-note">
+    <strong>The paths and the user name are the only things edited</strong> — the transcript came out
+    of a temporary directory with a machine-generated name. Everything else is what the library
+    printed.
+  </p>
+</section>
+
+<section class="features">
+  <h2>What is in the box</h2>
+
+  <div class="grid">
+    <article>
+      <h3>A VT/xterm parser</h3>
+      <p>
+        CSI, OSC, DCS and SGR. The alternate screen, scrollback, wide characters and combining marks,
+        and reflow when the console is resized. Written here rather than wrapped: there is no
+        libvterm and no xterm.js in the package.
+      </p>
+    </article>
+    <article>
+      <h3>A cell renderer</h3>
+      <p>
+        Glyph runs through Avalonia's own drawing context, snapped to whole device pixels so column
+        boundaries do not land on a third of one. Dirty-region repaints, and a cursor that blinks at
+        xterm's 530&nbsp;ms.
+      </p>
+    </article>
+    <article>
+      <h3>Keyboard and mouse</h3>
+      <p>
+        Application cursor keys, bracketed paste, mouse modes 1000/1002/1006. Text goes through the
+        platform's own input path, so a dead key or an IME composition arrives as the character the
+        user meant rather than as the keys they pressed.
+      </p>
+    </article>
+    <article>
+      <h3>A pty per program</h3>
+      <p>
+        <code>posix_openpt</code> and <code>posix_spawn</code> behind an interface. A program asks
+        the kernel whether it is on a terminal and gets the answer it needs — which is the difference
+        between running <code>ls</code> and running <code>vim</code>.
+      </p>
+    </article>
+    <article>
+      <h3>A shell of its own</h3>
+      <p>
+        <code>cd</code>, <code>pwd</code>, <code>exit</code> and <code>help</code> are builtins;
+        everything else is a file found on <code>PATH</code>. No <code>zsh</code>, no
+        <code>bash</code>, no <code>cmd.exe</code> — nothing installed.
+      </p>
+    </article>
+    <article>
+      <h3>Or no process at all</h3>
+      <p>
+        Turn <code>AutoStart</code> off and nothing is spawned and no pty is opened. Feed it bytes,
+        handle the bytes it emits, and you have a terminal over an SSH channel, a container, a serial
+        port or a replayed recording.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="start">
+  <h2>Three ways to use it</h2>
+
+  <h3>1 · A shell, with nothing installed</h3>
+<pre><code>Content = new AvaTerminal();</code></pre>
+  <p>
+    The built-in shell starts, sized to whatever rectangle the control is given. Type <code>ls</code>
+    and you get <code>/bin/ls</code>.
+  </p>
+
+  <h3>2 · A program</h3>
+<pre><code>var terminal = new AvaTerminal();
+terminal.Start("/usr/bin/ssh", ["build-host"]);
+terminal.Exited += code =&gt; Close();</code></pre>
+  <p>
+    An absolute path and its arguments — there is no shell parsing here, and no <code>PATH</code>
+    search, because a control that split its own command line would be a second, worse shell.
+  </p>
+
+  <h3>3 · Whatever you like, over anything</h3>
+<pre><code>var terminal = new AvaTerminal { AutoStart = false };   // spawns nothing, opens no pty
+
+terminal.Input += bytes =&gt; channel.Send(bytes);         // what the user typed
+channel.Received += bytes =&gt; terminal.Feed(bytes);      // what the far end printed</code></pre>
+  <p>
+    This is the mode with no platform in it. Starting a program is the only thing that needs a pty,
+    so a terminal that starts nothing never reaches that code.
+  </p>
+</section>
+
+<section class="limits">
+  <h2>What it deliberately is not</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Not a terminal application</h3>
+      <p>
+        No chrome, tabs, splitting, search or session manager. It is a terminal in a rectangle;
+        everything around it belongs to the application it is dropped into.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Its shell is not <code>zsh</code></h3>
+      <p>
+        No pipes, redirection, globbing, variables or job control. Each of those is a language
+        feature, and a half-implementation that silently ignored <code>&gt; out.txt</code> would be
+        worse than an honest absence. <code>StartSystemShell()</code> runs the user's own.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Not Windows yet</h3>
+      <p>
+        macOS and Linux. The pty layer is <code>posix_spawn</code> and <code>openpty</code>; Windows
+        needs a ConPTY implementation of <code>IPtyHost</code>, which is one class and no change
+        above it.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Not a font rasteriser</h3>
+      <p>
+        The library decides which glyph goes in which cell at which pixel, with fallback-font
+        resolution and device-pixel snapping. Avalonia turns the outline into pixels — that part is
+        not ours, and nobody writes it twice.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Requirements</h2>
+  <table>
+    <tr><th>Avalonia</th><td>12.1</td></tr>
+    <tr><th>.NET</th><td>8.0 or later</td></tr>
+    <tr><th>Platforms</th><td>macOS, Linux</td></tr>
+    <tr><th>Dependencies</th><td>One: <code>Avalonia</code>. Never <code>Avalonia.Desktop</code> — a control does not choose an application's windowing backend.</td></tr>
+  </table>
+  <p class="footnote">
+    Everything the library needs above the kernel is in the package: one assembly, 184&nbsp;KB.
+  </p>
+</section>
+
+<!--#footer-->
+<footer>
+  <p>
+    <strong>AvaTerminal</strong> — a terminal emulator control for
+    <a href="https://avaloniaui.net/">Avalonia</a>. Freeware; see the licence in the repository for the
+    exact terms.
+  </p>
+  <p class="thin">
+    <a href="index.html">Home</a> ·
+    <a href="documentation.html">Documentation</a> ·
+    <a href="guide.html">Guide</a> ·
+    <a href="releases.html">Releases</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal">GitHub</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues">Issues</a> ·
+    <a href="https://www.nuget.org/packages/AvaTerminal">NuGet</a>
+  </p>
+</footer>
+<!--#/footer-->
+
+<script src="site.js" defer></script>
+</body>
+</html>

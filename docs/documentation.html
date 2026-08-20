@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation — AvaTerminal</title>
+<meta name="description" content="The AvaTerminal API: the control, its properties, events and methods, the built-in shell, the pty session, the theme, and the rules about threading and lifetime.">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="header.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="page.css">
+</head>
+<body data-page="documentation">
+
+<!--#header-->
+<!-- The shared header. Same markup, same class names and the same header.css as the other sites in
+     this family. Rewritten by tools/site-parts.py — edit it there, not here. -->
+<header class="bar"><nav class="nav" aria-label="Site">
+  <a class="brand" href="index.html" title="Home">Ava<span>Terminal</span></a>
+  <span class="tag">12.1.0-preview.1 · preview</span>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="documentation.html">Documentation</a>
+    <a href="guide.html">Guide</a>
+    <a href="releases.html">Releases</a>
+  </div>
+  <div class="links tools">
+    <details class="fb">
+      <summary>Feedback</summary>
+      <div class="fb-pop">
+        <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg><span><b>GitHub Issues</b><small>A bug, a missing escape sequence, a question — in the open, where the answer helps the next person.</small></span></a>
+      </div>
+    </details>
+    <a class="nav-ico" href="https://github.com/pavel-zheltiakov/AvaTerminal" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg></a>
+  </div>
+</nav></header>
+<!--#/header-->
+
+<section class="doc">
+
+<nav class="toc" aria-label="On this page">
+  <h2>On this page</h2>
+  <ol>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#control">AvaTerminal</a>
+      <ol>
+        <li class="sub"><a href="#properties">Properties</a></li>
+        <li class="sub"><a href="#state">State</a></li>
+        <li class="sub"><a href="#events">Events</a></li>
+        <li class="sub"><a href="#methods">Methods</a></li>
+      </ol>
+    </li>
+    <li><a href="#sizing">Sizing</a></li>
+    <li><a href="#appearance">Appearance</a></li>
+    <li><a href="#shell">BuiltinShell</a></li>
+    <li><a href="#session">PtyTerminalSession</a></li>
+    <li><a href="#screen">Reading the screen</a></li>
+    <li><a href="#resolver">CommandResolver</a></li>
+    <li><a href="#threading">Threading and lifetime</a></li>
+    <li><a href="#namespaces">Namespaces</a></li>
+  </ol>
+</nav>
+
+<div class="doc-body">
+
+<section id="install">
+  <h2>Install</h2>
+<pre><code>dotnet add package AvaTerminal --prerelease</code></pre>
+  <p>
+    One package, one assembly, one dependency (<code>Avalonia</code>). Requires Avalonia 12.1 and
+    .NET 8.0 or later, on macOS or Linux.
+  </p>
+<pre><code>using AvaTerminal;</code></pre>
+  <p>
+    In XAML, the control is in the assembly's own namespace:
+  </p>
+<pre><code>&lt;Window xmlns:ava="clr-namespace:AvaTerminal;assembly=AvaTerminal"&gt;
+    &lt;ava:AvaTerminal /&gt;
+&lt;/Window&gt;</code></pre>
+</section>
+
+<section id="control">
+  <h2>AvaTerminal</h2>
+  <p class="lede">
+    An Avalonia <code>Control</code>. It owns a pty, a VT engine that parses what comes back, and a
+    scene of exactly one terminal.
+  </p>
+  <p>
+    A bare control starts the <a href="#shell">built-in shell</a> when it is attached to a visual
+    tree. Everything below is optional.
+  </p>
+
+  <h3 id="properties">Properties</h3>
+  <p>
+    All of these are Avalonia <code>StyledProperty</code>, so they can be set in XAML, bound, or
+    given a value by a style.
+  </p>
+
+  <table>
+    <tr><th>Property</th><th>Type</th><th>Default</th><th></th></tr>
+    <tr>
+      <td><code>Command</code></td><td><code>string?</code></td><td><code>null</code></td>
+      <td>The program to run — an <strong>absolute path</strong>. There is no <code>PATH</code> search and no shell parsing here: a control that split its own command line would be a second, worse shell. <code>null</code> runs the built-in shell.</td>
+    </tr>
+    <tr>
+      <td><code>Arguments</code></td><td><code>IReadOnlyList&lt;string&gt;</code></td><td><code>[]</code></td>
+      <td>Arguments for <code>Command</code>, excluding the program name itself.</td>
+    </tr>
+    <tr>
+      <td><code>WorkingDirectory</code></td><td><code>string?</code></td><td><code>null</code></td>
+      <td>Where the program starts. <code>null</code> leaves it to the process the control is in.</td>
+    </tr>
+    <tr>
+      <td><code>AutoStart</code></td><td><code>bool</code></td><td><code>true</code></td>
+      <td>Whether attaching to a visual tree starts anything at all. <code>false</code> is the mode with <a href="guide.html#hosted">no process and no pty</a>.</td>
+    </tr>
+    <tr>
+      <td><code>AutoSize</code></td><td><code>bool</code></td><td><code>true</code></td>
+      <td>Whether the console follows the control's rectangle. See <a href="#sizing">Sizing</a>.</td>
+    </tr>
+    <tr>
+      <td><code>Columns</code> / <code>Rows</code></td><td><code>int</code></td><td><code>120</code> / <code>40</code></td>
+      <td>The console size. Read them to find out what it is; <strong>writing</strong> either one pins the size and turns <code>AutoSize</code> off for good.</td>
+    </tr>
+    <tr>
+      <td><code>TerminalFontSize</code></td><td><code>double</code></td><td><code>14</code></td>
+      <td>In device-independent pixels. Changing it re-measures the cell and re-fits the console.</td>
+    </tr>
+    <tr>
+      <td><code>Background</code></td><td><code>IBrush?</code></td><td><code>null</code></td>
+      <td>What is painted behind the screen. <code>null</code> means the theme's background — so a style, or a different <code>TerminalTheme</code>, actually takes effect.</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>Changing what to run restarts it.</strong> <code>Command</code>, <code>Arguments</code>
+    and <code>WorkingDirectory</code> are one decision written on three lines, so setting any of them
+    while something is running restarts it — <em>once</em>, after the current dispatcher turn, so
+    three assignments in a row are one restart with all three values.
+  </div>
+
+  <h3 id="state">State</h3>
+  <table>
+    <tr><th>Member</th><th>Type</th><th></th></tr>
+    <tr><td><code>IsRunning</code></td><td><code>bool</code></td><td>Whether anything is running — a program, or the built-in shell.</td></tr>
+    <tr><td><code>Pid</code></td><td><code>int?</code></td><td>The process on the pty, or <code>null</code>. Under the built-in shell this is whatever the shell is running; at its prompt there is genuinely nothing running, and the answer is <code>null</code>.</td></tr>
+    <tr><td><code>Screen</code></td><td><code>VtEngine</code></td><td>The parsed screen. See <a href="#screen">Reading the screen</a>.</td></tr>
+    <tr><td><code>Title</code></td><td><code>string</code></td><td>The title the program last asked for (OSC 0 / OSC 2), or empty.</td></tr>
+    <tr><td><code>Metrics</code></td><td><code>CellMetrics</code></td><td>The cell geometry the next frame will draw with — width, height, baseline, in device-independent pixels.</td></tr>
+    <tr><td><code>Font</code></td><td><code>TerminalFont</code></td><td>The resolved monospaced face. Settable; see <a href="#appearance">Appearance</a>.</td></tr>
+    <tr><td><code>TerminalTheme</code></td><td><code>Theme</code></td><td>Colours. See <a href="#appearance">Appearance</a>.</td></tr>
+  </table>
+
+  <h3 id="events">Events</h3>
+
+  <span class="sig-line">public event Action&lt;int&gt;? Exited;</span>
+  <p>
+    The program ended, with its exit code — <strong>after</strong> its last output. The ordering is
+    the half worth relying on: the last thing a program prints is regularly the thing the user needs,
+    and a control told about the exit first would be free to tear the screen down before it arrived.
+    By the time this is raised <code>IsRunning</code> is already <code>false</code>.
+  </p>
+
+  <span class="sig-line">public event Action? ScreenChanged;</span>
+  <p>Anything at all was drawn. Raised on every chunk of output and on every <code>Feed</code>.</p>
+
+  <span class="sig-line">public event Action&lt;string&gt;? TitleChanged;</span>
+  <p>
+    The program set the window title. What a shell prompt uses to say which directory it is in, and
+    what <code>ssh</code>, <code>vim</code> and <code>top</code> use to say what they are. An
+    application with tabs puts it on the tab.
+  </p>
+
+  <span class="sig-line">public event Action? Bell;</span>
+  <p>
+    The program rang the bell (<code>0x07</code>). Deliberately not turned into a sound: whether a
+    bell is audible, a flash, a dock badge or nothing at all is a decision about the application, and
+    a library that made it would be a library that beeps in a build log viewer.
+  </p>
+
+  <span class="sig-line">public event Action&lt;ReadOnlyMemory&lt;byte&gt;&gt;? Input;</span>
+  <p>
+    The bytes the user's keystrokes and mouse gestures encode to — and the bytes the terminal emits
+    when it <em>answers</em> a question the program asked. Raised whether or not anything is running,
+    and after the running program has been written to.
+  </p>
+  <p>
+    This is the other half of <code>Feed</code>, and what makes the control usable with no process
+    behind it: send these wherever the far end is, and push what comes back through <code>Feed</code>.
+  </p>
+  <div class="note">
+    <code>Send</code> deliberately does <strong>not</strong> raise this. An application that
+    broadcasts <code>Input</code> to its other terminals with <code>Send</code> would otherwise have
+    written a loop.
+  </div>
+
+  <h3 id="methods">Methods</h3>
+
+  <span class="sig-line">public void Start(string command, IReadOnlyList&lt;string&gt;? arguments = null,
+                  string? workingDirectory = null,
+                  IReadOnlyDictionary&lt;string, string&gt;? environment = null)</span>
+  <p>
+    Starts a program, replacing whatever was running. <code>command</code> is an absolute path;
+    <code>environment</code> is <em>added</em> to what the process inherits.
+  </p>
+
+  <span class="sig-line">public void StartBuiltinShell(string? workingDirectory = null)</span>
+  <p>
+    Starts the shell that comes with the control — the default, and what needs no other program. See
+    <a href="#shell">BuiltinShell</a>.
+  </p>
+
+  <span class="sig-line">public void StartSystemShell(string? workingDirectory = null)</span>
+  <p>
+    Starts <code>$SHELL</code>, or <code>/bin/sh</code>. The choice every other terminal emulator
+    makes, and here for an application that wants the user's own shell with their aliases, prompt and
+    completion.
+  </p>
+
+  <span class="sig-line">public void Stop()</span>
+  <p>Ends whatever is running. Does nothing when nothing is. Called automatically when the control leaves the visual tree.</p>
+
+  <span class="sig-line">public void Send(string text)
+public void Send(ReadOnlyMemory&lt;byte&gt; data)</span>
+  <p>
+    Types into whatever is running — a program on the pty, or the built-in shell. The
+    <code>string</code> overload is UTF-8 encoded; append <code>"\r"</code> to press Return.
+  </p>
+
+  <span class="sig-line">public void Feed(ReadOnlySpan&lt;byte&gt; data)</span>
+  <p>
+    Puts bytes on the screen as though the program had printed them, and sends nothing. The seam for
+    a terminal that is not driven by a local process: an ssh channel, a container, a recording being
+    replayed.
+  </p>
+
+  <span class="sig-line">public void Signal(PtySignal signal)</span>
+  <p>
+    Signals the program's process group. <code>PtySignal.Int</code> is Ctrl-C's path;
+    <code>Hup</code>, <code>Quit</code>, <code>Kill</code>, <code>Term</code>, <code>Cont</code>,
+    <code>Stop</code>, <code>Tstp</code>, <code>Winch</code>, <code>Usr1</code> and <code>Usr2</code>
+    are the rest. Under the built-in shell it reaches the program the shell is running, and at its
+    prompt an interrupt means what Ctrl-C means there: abandon the line.
+  </p>
+</section>
+
+<section id="sizing">
+  <h2>Sizing</h2>
+  <p class="lede">
+    <strong>The console is resized to fit the control</strong>, and resizing the window resizes the
+    program. That is <code>AutoSize</code>, and it is on by default because a terminal dropped on a
+    form <em>is</em> the window.
+  </p>
+  <p>
+    Setting <code>Columns</code> or <code>Rows</code> pins the size instead — the property is both
+    the question and the answer, so writing to it is what turns the fitting off — and the control
+    then draws that console inside whatever space it has.
+  </p>
+<pre><code>&lt;ava:AvaTerminal AutoSize="False" Columns="80" Rows="24" /&gt;</code></pre>
+  <p>
+    An unconstrained control asks for exactly its console, so a terminal in a <code>StackPanel</code>
+    or a <code>SizeToContent</code> window is <code>Columns</code>&nbsp;×&nbsp;<code>Rows</code> of
+    the face it draws in rather than nothing at all.
+  </p>
+  <div class="note">
+    <strong>Whole cells only.</strong> Half a column is not a column, and a program told it has one
+    would draw into pixels that are not there. A rectangle that fits 40.9 columns is a console of 40.
+  </div>
+  <div class="note">
+    <strong>A resize to the size it already has signals nothing.</strong> A layout pass that produced
+    the same answer must not raise <code>SIGWINCH</code>: a full-screen program redraws on every one,
+    and a control is arranged far more often than it is resized.
+  </div>
+</section>
+
+<section id="appearance">
+  <h2>Appearance</h2>
+
+  <h3>Font</h3>
+  <p>
+    <code>TerminalFont.Resolve(params string[] families)</code> picks the first monospaced family
+    that is actually installed, falling back through a built-in list that ends somewhere every
+    platform has.
+  </p>
+<pre><code>terminal.Font = TerminalFont.Resolve("JetBrains Mono", "Menlo");
+terminal.TerminalFontSize = 13;</code></pre>
+  <p>
+    A cell is measured from the face's own advance width and line spacing, then <strong>snapped to a
+    whole device pixel</strong> — column boundaries on a third of a pixel are what makes a grid of
+    text look like it has grey seams in it.
+  </p>
+
+  <h3>Colours</h3>
+  <p>
+    <code>Theme</code> is the terminal's colour model: the 256-entry palette, what "default" means,
+    and how the rendition attributes that are colour decisions — bold, dim, reverse, invisible —
+    change the answer.
+  </p>
+<pre><code>terminal.TerminalTheme = new Theme(
+    foreground:  Rgba.FromHex(0xE4E4E4),
+    background:  Rgba.FromHex(0x101216),
+    cursor:      Rgba.FromHex(0x7FD8A0),
+    cursorText:  Rgba.FromHex(0x101216),
+    selection:   Rgba.FromHex(0x2E4A6B),
+    ansi16:      myPalette,      // exactly 16
+    boldIsBright: true,          // SGR 1 promotes 0-7 to 8-15, as xterm does
+    dimAmount:    0.45);</code></pre>
+  <p>
+    <code>Theme.Dark</code> is the default and uses xterm's own sixteen colours verbatim — worth
+    using rather than something prettier, because every program that picks colour 2 was written and
+    looked at against roughly these.
+  </p>
+  <p>
+    Changing the theme re-colours a screen that was painted an hour ago: the engine stores what the
+    program <em>said</em> (palette index 4), never what it should look like.
+  </p>
+</section>
+
+<section id="shell">
+  <h2>BuiltinShell</h2>
+  <p class="lede">
+    The shell the control runs when you have not given it a <code>Command</code>. It finds the
+    program you named, runs it, and shows what it printed.
+  </p>
+  <p>
+    A shell is two things and no more. A handful of <em>builtins</em> that have to run inside it —
+    <code>cd</code> is the whole argument, since a separate process cannot change its parent's
+    directory — and for everything else, a search of <code>PATH</code> for a file of that name, then
+    run it.
+  </p>
+
+  <table>
+    <tr><th>Builtin</th><th></th></tr>
+    <tr><td><code>cd [dir]</code></td><td>Changes the shell's directory. <code>~</code> is expanded; no argument means home.</td></tr>
+    <tr><td><code>pwd</code></td><td>Prints it.</td></tr>
+    <tr><td><code>exit</code></td><td>Ends the shell, which raises <code>Exited(0)</code> on the control.</td></tr>
+    <tr><td><code>help</code></td><td>Lists the four of them.</td></tr>
+  </table>
+
+  <table>
+    <tr><th>Key</th><th></th></tr>
+    <tr><td>Return</td><td>Runs the line.</td></tr>
+    <tr><td>Backspace</td><td>Removes one <em>character</em> — an emoji goes in one press, not two.</td></tr>
+    <tr><td>Up / Down</td><td>History, 500 lines deep.</td></tr>
+    <tr><td>Ctrl-C</td><td>At the prompt, abandons the line. While a program is running it is the pty's, and becomes <code>SIGINT</code>.</td></tr>
+    <tr><td>Ctrl-D</td><td>On an empty line, ends the shell. Anywhere else it means end-of-input to the program.</td></tr>
+  </table>
+
+  <div class="note warn">
+    <strong>What it is not.</strong> There are no pipes, no redirection, no globbing, no variables,
+    no job control and no scripting. Each of those is a language feature, and a shell that has them
+    is a shell somebody spent years on. Quoting <em>is</em> handled — <code>cd "My Documents"</code>
+    works — because a line copied out of a terminal has to mean here what it meant there.
+  </div>
+
+  <p>
+    Every program runs on <strong>a pty of its own</strong>, which is what makes <code>vim</code>,
+    <code>top</code> and <code>git log</code> work rather than only <code>ls</code>: a program asks
+    the kernel whether its output is a terminal and behaves completely differently either way, and
+    only a pty answers yes.
+  </p>
+
+  <p>
+    A non-zero exit status is reported, because the program may have printed nothing at all and "it
+    did nothing" is the least useful thing a terminal can say. Zero is silent.
+  </p>
+
+  <h3>Using it directly</h3>
+  <p>
+    You rarely need to — the control creates one for you — but it is public, and it is where you
+    would start if you wanted a shell without a screen.
+  </p>
+<pre><code>var shell = new BuiltinShell(
+    output: data =&gt; terminal.Feed(data.Span),   // where what it prints goes
+    size:   () =&gt; new ConsoleSize(80, 24),      // asked when a program starts
+    post:   Dispatcher.UIThread.Post,           // how it reaches the screen's thread
+    workingDirectory: "/src/app");
+
+shell.Exited += () =&gt; Close();
+shell.Start();
+shell.Input("ls\r"u8.ToArray());</code></pre>
+  <table>
+    <tr><td><code>WorkingDirectory</code></td><td>Where commands run. Changed by <code>cd</code> and by nothing else.</td></tr>
+    <tr><td><code>IsBusy</code></td><td>Whether a program is running, and therefore where the keyboard is going.</td></tr>
+    <tr><td><code>Pid</code></td><td>That program's process id, or <code>null</code> at the prompt.</td></tr>
+    <tr><td><code>Resize(ConsoleSize)</code></td><td>Tells a running program the console changed size.</td></tr>
+    <tr><td><code>Signal(PtySignal)</code></td><td>Signals it, or ends the line being typed when there is none.</td></tr>
+  </table>
+</section>
+
+<section id="session">
+  <h2>PtyTerminalSession</h2>
+  <p class="lede">
+    One program on one pty: a background read loop, and the writes, resizes and signals that go the
+    other way.
+  </p>
+<pre><code>await using var session = PtyTerminalSession.Start(
+    new PtyStartInfo
+    {
+        Command = "/bin/sh",
+        Args    = ["-c", "echo hello; sleep 5"],
+        Size    = new ConsoleSize(80, 24),
+    },
+    post: Dispatcher.UIThread.Post);
+
+session.Output += chunk =&gt; terminal.Feed(chunk.Span);
+session.Exited += code =&gt; Console.WriteLine($"exit {code}");
+session.Run();</code></pre>
+  <p>
+    <code>post</code> is how the reader thread reaches the thread that owns the screen. Everything
+    raised — <code>Output</code> and <code>Exited</code> — arrives through it, so a handler never has
+    to think about which thread it is on.
+  </p>
+  <table>
+    <tr><td><code>Pid</code>, <code>Size</code>, <code>HasExited</code></td><td>What it is.</td></tr>
+    <tr><td><code>Run()</code></td><td>Starts the read loop. Idempotent.</td></tr>
+    <tr><td><code>Write(ReadOnlyMemory&lt;byte&gt;)</code></td><td>To the program.</td></tr>
+    <tr><td><code>Resize(ConsoleSize)</code></td><td>Sets the kernel's idea of the size and raises <code>SIGWINCH</code>. A resize to the size it already has does nothing at all.</td></tr>
+    <tr><td><code>Signal(PtySignal)</code></td><td>To the foreground process group.</td></tr>
+    <tr><td><code>DisposeAsync()</code></td><td>Ends the process. A terminal that went away leaving a process behind is a process nobody can see, type into or find.</td></tr>
+  </table>
+</section>
+
+<section id="screen">
+  <h2>Reading the screen</h2>
+  <p>
+    <code>terminal.Screen</code> is the <code>VtEngine</code>: the parsed state, not a byte log.
+  </p>
+<pre><code>var screen = terminal.Screen;
+
+screen.GetScreenText();                  // everything visible, as text
+screen.Columns, screen.Rows;             // the console size
+screen.CursorX, screen.CursorY;          // where the cursor is
+screen.IsAlternateScreen;                // true while vim or top is up
+screen.Title;                            // what OSC 0 last set
+screen.Scrollback;                       // what has gone off the top
+
+var line = new StringBuilder();
+screen.AppendRowText(line, screen.ActiveScreen[0]);   // one row</code></pre>
+  <p>
+    The engine also raises the things a terminal is <em>told</em> rather than shown, which the
+    control forwards where they are worth forwarding:
+  </p>
+  <table>
+    <tr><td><code>TitleChanged</code></td><td>OSC 0 / OSC 2 — forwarded as <code>AvaTerminal.TitleChanged</code>.</td></tr>
+    <tr><td><code>Bell</code></td><td>BEL — forwarded as <code>AvaTerminal.Bell</code>.</td></tr>
+    <tr><td><code>Reply</code></td><td>The terminal's answer to a question. <strong>Handled for you</strong>: it goes back to the program exactly as a keystroke does. Do not also forward it, or the program is answered twice.</td></tr>
+    <tr><td><code>NotificationRequested</code></td><td>OSC 9 / OSC 777 desktop notifications.</td></tr>
+    <tr><td><code>PromptMarked</code></td><td>OSC 133 shell integration marks — where a prompt began, where a command's output began, and what it exited with.</td></tr>
+    <tr><td><code>ClipboardRequested</code></td><td>OSC 52. Not acted on by the control; a program that can write your clipboard is a decision for the application to make.</td></tr>
+    <tr><td><code>AlternateScreenChanged</code></td><td>A full-screen program came up, or went away.</td></tr>
+  </table>
+  <div class="note">
+    <strong>The screen is a model, not a transcript.</strong> A program that redraws a progress bar
+    ten thousand times leaves one row, not ten thousand. If you want a transcript, record what you
+    fed it.
+  </div>
+</section>
+
+<section id="resolver">
+  <h2>CommandResolver</h2>
+  <p>
+    The <code>PATH</code> search, on its own, for an application that wants to find a program without
+    running one — to grey out a button, or to say why something is missing before the user waits for
+    it.
+  </p>
+  <span class="sig-line">public static bool TryResolve(string? command, string? workingDirectory,
+                             out string? path, out string? error,
+                             string? environmentPath = null)</span>
+  <p>
+    A name containing a separator is a path and is never searched for — the rule that makes
+    <code>./build</code> run the one in this directory rather than one that happens to be on
+    <code>PATH</code> under the same name. A bare name is looked for in each directory of
+    <code>PATH</code> in turn, and a file that is present but not executable is skipped rather than
+    reported: <code>PATH</code> directories hold data files too, and stopping at the first matching
+    name sends the user looking in the wrong place.
+  </p>
+  <p>
+    <code>CommandLine.TrySplit</code> is the other half — a shell's quoting rules and nothing past
+    them, so a line copied out of a terminal means here what it meant there.
+  </p>
+</section>
+
+<section id="threading">
+  <h2>Threading and lifetime</h2>
+  <table>
+    <tr>
+      <th>The rule</th><th>Why</th>
+    </tr>
+    <tr>
+      <td>Call the control from the UI thread.</td>
+      <td>It is an Avalonia <code>Control</code>. Output arriving from a pty is already marshalled for you.</td>
+    </tr>
+    <tr>
+      <td>The process goes with the control.</td>
+      <td>Leaving the visual tree calls <code>Stop()</code>. A terminal taken off screen with a shell still running on it is a process nobody can see, type into or find.</td>
+    </tr>
+    <tr>
+      <td>Detaching releases the screen.</td>
+      <td>An application that opens and closes fifty terminal tabs costs fifty terminals' worth of memory while they are open, and none afterwards.</td>
+    </tr>
+    <tr>
+      <td>Re-attaching works.</td>
+      <td>A control moved from one parent to another comes back with its screen intact. It does not restart what was running, because it stopped it — start it again if you want it.</td>
+    </tr>
+    <tr>
+      <td>Two controls are independent.</td>
+      <td>Each owns its scene, its engine and its cursor blink. Nothing is shared between them.</td>
+    </tr>
+  </table>
+</section>
+
+<section id="namespaces">
+  <h2>Namespaces</h2>
+  <p>
+    One assembly, four namespaces, and they do not reach upwards:
+  </p>
+  <table>
+    <tr><th>Namespace</th><th></th></tr>
+    <tr><td><code>AvaTerminal</code></td><td>The control, the built-in shell, the pty session, the font, and <code>ConsoleSize</code>, <code>CommandLine</code>, <code>CommandResolver</code>.</td></tr>
+    <tr><td><code>AvaTerminal.Vt</code></td><td>The parser and the screen model: <code>VtEngine</code>, <code>Screen</code>, <code>Row</code>, <code>Cell</code>, <code>Scrollback</code>, <code>VtColor</code>.</td></tr>
+    <tr><td><code>AvaTerminal.Scene</code></td><td>The visual tree and the renderer's contract: <code>Theme</code>, <code>Rgba</code>, <code>CellMetrics</code>, <code>ISceneContext</code>, <code>TerminalVisual</code>, <code>SceneGraph</code>.</td></tr>
+    <tr><td><code>AvaTerminal.Pty</code></td><td>The kernel object: <code>IPtyHost</code>, <code>PtyStartInfo</code>, <code>PtySignal</code>, <code>PtyException</code>.</td></tr>
+  </table>
+  <p class="footnote">
+    <code>AvaTerminal.Scene</code> is a namespace inside a type's own name. Where that is ambiguous —
+    inside <code>namespace AvaTerminal</code> — qualify it as
+    <code>global::AvaTerminal.Scene.Theme</code>, or add a <code>using</code> alias.
+  </p>
+</section>
+
+</div>
+</section>
+
+<!--#footer-->
+<footer>
+  <p>
+    <strong>AvaTerminal</strong> — a terminal emulator control for
+    <a href="https://avaloniaui.net/">Avalonia</a>. Freeware; see the licence in the repository for the
+    exact terms.
+  </p>
+  <p class="thin">
+    <a href="index.html">Home</a> ·
+    <a href="documentation.html">Documentation</a> ·
+    <a href="guide.html">Guide</a> ·
+    <a href="releases.html">Releases</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal">GitHub</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues">Issues</a> ·
+    <a href="https://www.nuget.org/packages/AvaTerminal">NuGet</a>
+  </p>
+</footer>
+<!--#/footer-->
+
+<script src="site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+/* AvaTerminal's own additions to the family stylesheet.
+
+   site.css is shared with the other sites in this family and is not edited here. Two things are
+   different about this one: there is no hero photograph — a terminal is a dark rectangle, and a
+   photograph behind it would be a picture of a picture — and it has two long prose pages, which
+   the shared sheet has no vocabulary for. */
+
+/* The hero, without the photograph. The palette below is the one .hero-wrap fixes when it stands on
+   a dark image, kept so everything inside it still reads. */
+.hero-wrap {
+  background: radial-gradient(120% 140% at 12% 0%, #16202c 0%, #0a0d13 55%, #06080d 100%);
+}
+
+/* ---- a terminal, drawn as itself ---- */
+
+.term {
+  margin: 26px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #16181c;
+  box-shadow: var(--shadow);
+}
+
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #26292f;
+  border-bottom: 1px solid rgb(0 0 0 / 35%);
+}
+
+.term-bar i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+.term-bar i:nth-child(1) { background: #be5a54; }
+.term-bar i:nth-child(2) { background: #c8a55a; }
+.term-bar i:nth-child(3) { background: #6eaa6e; }
+.term-bar span { margin-left: 8px; font-size: 12px; color: #99a1ad; }
+
+.term pre {
+  margin: 0;
+  padding: 16px 18px;
+  background: #16181c;
+  color: #dde2ec;
+  border: 0;
+  border-radius: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+
+.term .dir { color: #6ec7d6; }
+.term .sig { color: #78c98a; }
+.term .err { color: #d8867e; }
+.term .dim { color: #8d95a2; }
+
+/* ---- documentation and guide ---- */
+
+.doc { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; align-items: start; }
+
+.toc { position: sticky; top: calc(var(--bar) + 24px); font-size: 14px; }
+.toc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); margin: 0 0 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { margin: 0 0 7px; }
+.toc a { color: var(--dim); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc .sub { padding-left: 12px; font-size: 13px; }
+
+.doc-body > section { max-width: none; margin: 0; padding: 0 0 52px; }
+.doc-body h2 { scroll-margin-top: calc(var(--bar) + 20px); }
+.doc-body h3 { font-size: 17px; margin: 30px 0 8px; scroll-margin-top: calc(var(--bar) + 20px); }
+.doc-body h4 { font-size: 15px; margin: 22px 0 6px; color: var(--text); }
+.doc-body p, .doc-body li { line-height: 1.65; }
+.doc-body table { min-width: 0; margin: 14px 0 8px; }
+.doc-body td code, .doc-body th code { white-space: nowrap; }
+
+/* A member's signature: the line somebody scanning the page is looking for. */
+.sig-line {
+  display: block;
+  margin: 18px 0 6px;
+  padding: 10px 14px;
+  background: var(--codebg);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  color: var(--code);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.note {
+  margin: 18px 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--line);
+  background: var(--bg-alt);
+  border-radius: 0 6px 6px 0;
+  color: var(--dim);
+  font-size: 15px;
+}
+
+.note strong { color: var(--text); }
+.note.warn { border-left-color: #c8a55a; }
+
+.step { counter-increment: step; }
+.step > h2::before {
+  content: counter(step);
+  display: inline-grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  vertical-align: 2px;
+}
+.doc-body { counter-reset: step; }
+
+@media (max-width: 900px) {
+  .doc { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .toc { position: static; }
+}
+
+/* Small page-level classes the guide uses, so no style attribute appears in the markup. */
+.toc-more { margin-top: 22px; }
+.toc-more a { color: var(--dim); text-decoration: none; }
+.toc-more a:hover { color: var(--accent); }
+.guide-title { margin: 0 0 10px; font-size: clamp(26px, 3vw, 34px); }
+.rule-above { border-top: 1px solid var(--line); padding-top: 36px; }
+pre.in-note { margin: 10px 0 0; }

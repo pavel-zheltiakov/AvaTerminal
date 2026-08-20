@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Releases — AvaTerminal</title>
+<meta name="description" content="Every version of AvaTerminal with its notes and its package, newest first.">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="header.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="page.css">
+<script src="releases-local.js"></script>
+</head>
+<body data-page="releases">
+
+<!--#header-->
+<!-- The shared header. Same markup, same class names and the same header.css as the other sites in
+     this family. Rewritten by tools/site-parts.py — edit it there, not here. -->
+<header class="bar"><nav class="nav" aria-label="Site">
+  <a class="brand" href="index.html" title="Home">Ava<span>Terminal</span></a>
+  <span class="tag">12.1.0-preview.1 · preview</span>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="documentation.html">Documentation</a>
+    <a href="guide.html">Guide</a>
+    <a href="releases.html">Releases</a>
+  </div>
+  <div class="links tools">
+    <details class="fb">
+      <summary>Feedback</summary>
+      <div class="fb-pop">
+        <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg><span><b>GitHub Issues</b><small>A bug, a missing escape sequence, a question — in the open, where the answer helps the next person.</small></span></a>
+      </div>
+    </details>
+    <a class="nav-ico" href="https://github.com/pavel-zheltiakov/AvaTerminal" title="GitHub" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg></a>
+  </div>
+</nav></header>
+<!--#/header-->
+
+<section class="releases">
+  <h2>Releases</h2>
+  <p class="lede">
+    Every version with its notes and its package, newest first. The same list is on
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal/releases">GitHub Releases</a>, where the
+    <code>.nupkg</code> is attached to each one, and on
+    <a href="https://www.nuget.org/packages/AvaTerminal">NuGet</a>.
+  </p>
+
+  <!-- Filled by site.js from the GitHub API, with the pending release from releases-local.js in front
+       of it. Without script this paragraph is what remains, and it goes somewhere useful. -->
+  <div id="releases" class="rel-list">
+    <p class="footnote">
+      Loading the release history… if it does not appear, read it on
+      <a href="https://github.com/pavel-zheltiakov/AvaTerminal/releases">GitHub</a>.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>Versions</h2>
+  <p>
+    <code>&lt;avalonia-major&gt;.&lt;avalonia-minor&gt;.&lt;release&gt;[-suffix]</code>. The first two
+    segments track the Avalonia release the package is built against, because that is the
+    compatibility question every consumer actually has; the third is the release number.
+  </p>
+  <p>
+    A <code>-preview</code> suffix makes it a NuGet prerelease: hidden from default searches and
+    opted into on install, which is the right amount of friction for an API that may still move.
+  </p>
+<pre><code>dotnet add package AvaTerminal --prerelease</code></pre>
+</section>
+
+<!--#footer-->
+<footer>
+  <p>
+    <strong>AvaTerminal</strong> — a terminal emulator control for
+    <a href="https://avaloniaui.net/">Avalonia</a>. Freeware; see the licence in the repository for the
+    exact terms.
+  </p>
+  <p class="thin">
+    <a href="index.html">Home</a> ·
+    <a href="documentation.html">Documentation</a> ·
+    <a href="guide.html">Guide</a> ·
+    <a href="releases.html">Releases</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal">GitHub</a> ·
+    <a href="https://github.com/pavel-zheltiakov/AvaTerminal/issues">Issues</a> ·
+    <a href="https://www.nuget.org/packages/AvaTerminal">NuGet</a>
+  </p>
+</footer>
+<!--#/footer-->
+
+<script src="site.js" defer></script>
+</body>
+</html>
