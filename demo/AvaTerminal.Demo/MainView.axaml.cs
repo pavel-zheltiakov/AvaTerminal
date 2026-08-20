@@ -129,7 +129,7 @@ public partial class MainView : UserControl
     /// </summary>
     private static readonly (string Label, string[] Families)[] FontChoices =
     [
-        ("JetBrains Mono (embedded)", ["avares://AvaTerminal.Demo/Fonts#JetBrains Mono NL"]),
+        ("JetBrains Mono", ["avares://AvaTerminal.Demo/Fonts#JetBrains Mono NL"]),
         ("System default", []),
         ("Menlo", ["Menlo"]),
         ("Consolas", ["Consolas"]),
@@ -146,8 +146,12 @@ public partial class MainView : UserControl
         FontSizeSlider.Value = Terminal.TerminalFontSize;
         FontSizeSlider.PropertyChanged += (_, e) =>
         {
-            if (e.Property == Slider.ValueProperty) Terminal.TerminalFontSize = FontSizeSlider.Value;
+            if (e.Property != Slider.ValueProperty) return;
+
+            Terminal.TerminalFontSize = FontSizeSlider.Value;
+            ShowFontSize();
         };
+        ShowFontSize();
 
         Themes.ItemsSource = DemoThemes.All.Select(t => t.Name);
         Themes.SelectedIndex = 0;
@@ -157,6 +161,8 @@ public partial class MainView : UserControl
             Note($"theme: {DemoThemes.All[Math.Max(0, Themes.SelectedIndex)].Name}");
         };
     }
+
+    private void ShowFontSize() => FontSizeLabel.Text = $"Size {Terminal.TerminalFontSize:0}";
 
     /// <summary>
     /// Resolving a face, and saying which one answered.

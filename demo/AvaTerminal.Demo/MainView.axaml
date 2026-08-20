@@ -59,8 +59,14 @@
 
     <Grid ColumnDefinitions="340,*">
 
-      <ScrollViewer Grid.Column="0" Padding="16,4,16,16" Background="#161a21">
-        <StackPanel>
+      <!-- Horizontal scrolling off, which is what makes the wrapping hints below wrap: a
+           ScrollViewer that can scroll sideways measures its content with unlimited width,
+           and a TextBlock offered unlimited width never needs a second line. -->
+      <ScrollViewer Grid.Column="0" Background="#161a21" HorizontalScrollBarVisibility="Disabled">
+        <!-- The inset is on the panel and not on the ScrollViewer: a ScrollViewer's padding sits
+             inside its presenter, so the content is still measured against the full column and the
+             wrapped hints below lose their last few pixels to it. -->
+        <StackPanel Margin="16,4,16,16">
 
           <TextBlock Classes="section" Text="SESSION"/>
           <ComboBox x:Name="Sessions" HorizontalAlignment="Stretch"/>
@@ -78,7 +84,7 @@
             <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="Font"/>
             <ComboBox Grid.Row="0" Grid.Column="1" x:Name="Fonts" HorizontalAlignment="Stretch"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" Text="Size" Margin="0,8,0,0"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" x:Name="FontSizeLabel" Margin="0,8,0,0"/>
             <Slider Grid.Row="1" Grid.Column="1" x:Name="FontSizeSlider" Minimum="8" Maximum="28"
                     TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,4,0,0"/>
 
