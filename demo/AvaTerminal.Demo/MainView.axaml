@@ -1,13 +1,13 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ava="clr-namespace:AvaTerminal;assembly=AvaTerminal"
-             x:Class="AvaTerminal.Demo.MainView"
-            >
+             x:Class="AvaTerminal.Demo.MainView">
 
   <!--
-      The demo is a form with a terminal on it and every knob the library exposes beside it. The
-      layout is deliberately ordinary Avalonia: a DockPanel, a Grid and a ScrollViewer. The only
-      unusual element on the page is <ava:AvaTerminal/>, which is the point.
+      Three columns: what to look at, the terminal, and the code that did it.
+
+      The layout is deliberately ordinary Avalonia — a DockPanel, a Grid, a ListBox. The only unusual
+      element on the page is <ava:AvaTerminal/>, which is the point of the demo.
   -->
 
   <UserControl.Styles>
@@ -45,10 +45,8 @@
         <Border Background="#232a35" CornerRadius="4" Padding="7,2" VerticalAlignment="Center">
           <TextBlock x:Name="PlatformTag" FontSize="11" Opacity="0.8"/>
         </Border>
-        <TextBlock Text="a terminal emulator control for Avalonia — every knob on the left is a "
-                   VerticalAlignment="Center" FontSize="12" Opacity="0.55"/>
-        <TextBlock Text="documented property or event" VerticalAlignment="Center" FontSize="12"
-                   Opacity="0.55" FontStyle="Italic" Margin="-12,0,0,0"/>
+        <TextBlock VerticalAlignment="Center" FontSize="12" Opacity="0.55"
+                   Text="a terminal emulator control for Avalonia — walk the tour on the left, or open the Sandbox and try everything at once"/>
       </StackPanel>
     </Border>
 
@@ -57,86 +55,136 @@
       <TextBlock x:Name="Status" FontSize="11.5" Opacity="0.8"/>
     </Border>
 
-    <Grid ColumnDefinitions="340,*">
+    <Grid ColumnDefinitions="216,*,400">
 
-      <!-- Horizontal scrolling off, which is what makes the wrapping hints below wrap: a
-           ScrollViewer that can scroll sideways measures its content with unlimited width,
-           and a TextBlock offered unlimited width never needs a second line. -->
-      <ScrollViewer Grid.Column="0" Background="#161a21" HorizontalScrollBarVisibility="Disabled">
-        <!-- The inset is on the panel and not on the ScrollViewer: a ScrollViewer's padding sits
-             inside its presenter, so the content is still measured against the full column and the
-             wrapped hints below lose their last few pixels to it. -->
-        <StackPanel Margin="16,4,16,16">
+      <!-- ===== the tour ===================================================================== -->
 
-          <TextBlock Classes="section" Text="SESSION"/>
-          <ComboBox x:Name="Sessions" HorizontalAlignment="Stretch"/>
-          <TextBlock x:Name="SessionNote" Classes="hint"/>
-          <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
-            <Button x:Name="Restart" Content="Restart" FontSize="12"/>
-            <Button x:Name="StopIt" Content="Stop" FontSize="12"/>
-            <Button x:Name="Interrupt" Content="Ctrl-C" FontSize="12"
-                    ToolTip.Tip="Signal(PtySignal.Int)"/>
-          </StackPanel>
-          <TextBlock x:Name="HostNote" Classes="hint"/>
+      <Border Grid.Column="0" Background="#12151b" BorderBrush="#2a303b" BorderThickness="0,0,1,0">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Classes="section" Text="THE TOUR" Margin="16,14,16,8"/>
+          <ListBox x:Name="Tabs" Background="Transparent" BorderThickness="0" Padding="8,0"
+                   FontSize="13"/>
+        </DockPanel>
+      </Border>
 
-          <TextBlock Classes="section" Text="APPEARANCE"/>
-          <Grid ColumnDefinitions="86,*" RowDefinitions="Auto,Auto,Auto" >
-            <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="Font"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" x:Name="Fonts" HorizontalAlignment="Stretch"/>
+      <!-- ===== the terminal ================================================================= -->
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" x:Name="FontSizeLabel" Margin="0,8,0,0"/>
-            <Slider Grid.Row="1" Grid.Column="1" x:Name="FontSizeSlider" Minimum="8" Maximum="28"
-                    TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,4,0,0"/>
+      <Grid Grid.Column="1" RowDefinitions="*,Auto,Auto,150">
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Classes="field" Text="Theme"/>
-            <ComboBox Grid.Row="2" Grid.Column="1" x:Name="Themes" HorizontalAlignment="Stretch"/>
-          </Grid>
-          <TextBlock x:Name="FontNote" Classes="hint"/>
-
-          <TextBlock Classes="section" Text="SIZE"/>
-          <CheckBox x:Name="AutoSize" Content="AutoSize — the console follows the control" FontSize="12"/>
-          <Grid ColumnDefinitions="86,*" RowDefinitions="Auto,Auto" Margin="0,4,0,0">
-            <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="Columns"/>
-            <NumericUpDown Grid.Row="0" Grid.Column="1" x:Name="Columns" Minimum="20" Maximum="400"
-                           Increment="1" FormatString="0" FontSize="12"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" Text="Rows" Margin="0,6,0,0"/>
-            <NumericUpDown Grid.Row="1" Grid.Column="1" x:Name="Rows" Minimum="5" Maximum="200"
-                           Increment="1" FormatString="0" FontSize="12" Margin="0,6,0,0"/>
-          </Grid>
-          <TextBlock Classes="hint"
-                     Text="Writing to Columns or Rows pins the size and turns AutoSize off — the property is both the question and the answer."/>
-
-          <TextBlock Classes="section" Text="SEND"/>
-          <TextBox x:Name="ToSend" PlaceholderText="type a line, then Return" FontSize="12"/>
-          <TextBlock Classes="hint"
-                     Text="Send(text) types into whatever is running. It deliberately does not raise Input, or an application that broadcast one terminal's input to the others would have written a loop."/>
-
-          <TextBlock Classes="section" Text="FEED — ESCAPE SEQUENCES"/>
-          <StackPanel x:Name="Plays"/>
-          <TextBlock x:Name="PlayNote" Classes="hint"/>
-
-          <TextBlock Classes="section" Text="EVENTS"/>
-          <CheckBox x:Name="LogInput" Content="log what is typed (Input)" FontSize="12"/>
-          <Button x:Name="ReadScreen" Content="Read the screen" FontSize="12" Margin="0,6,0,0"
-                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                  ToolTip.Tip="Screen.GetScreenText()"/>
-          <Button x:Name="ClearLog" Content="Clear the log" FontSize="12" Margin="0,4,0,0"
-                  HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
-
-        </StackPanel>
-      </ScrollViewer>
-
-      <Grid Grid.Column="1" RowDefinitions="*,Auto,170">
-
-        <!-- The one unusual element on the page. -->
         <ava:AvaTerminal Grid.Row="0" x:Name="Terminal" AutoStart="False"/>
 
-        <Border Grid.Row="1" Height="1" Background="#2a303b"/>
+        <Border Grid.Row="1" x:Name="StepBar" Padding="14,9" Background="#1b1f27"
+                BorderBrush="#2a303b" BorderThickness="0,1,0,0">
+          <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+            <Button Grid.Column="0" x:Name="Back" Content="Back" FontSize="12"/>
+            <Button Grid.Column="1" x:Name="Again" Content="Run again" FontSize="12" Margin="6,0,0,0"/>
+            <Button Grid.Column="2" x:Name="Next" Content="Next step" FontSize="12" Margin="6,0,0,0"
+                    Classes="accent"/>
+            <TextBlock Grid.Column="3" x:Name="Progress" Classes="field" Margin="14,0,0,0"/>
+            <Button Grid.Column="4" x:Name="Sandbox" Content="Open the Sandbox" FontSize="12"/>
+          </Grid>
+        </Border>
 
-        <TextBox Grid.Row="2" x:Name="Log" IsReadOnly="True" AcceptsReturn="True" FontSize="11.5"
+        <Border Grid.Row="2" Height="1" Background="#2a303b"/>
+
+        <TextBox Grid.Row="3" x:Name="Log" IsReadOnly="True" AcceptsReturn="True" FontSize="11.5"
                  TextWrapping="NoWrap" BorderThickness="0" Background="#12151b"
                  VerticalContentAlignment="Top"/>
       </Grid>
+
+      <!-- ===== the explanation, and the code that did it ==================================== -->
+
+      <Border Grid.Column="2" Background="#12151b" BorderBrush="#2a303b" BorderThickness="1,0,0,0">
+
+        <!-- One of these two is visible: a step of the tour, or the Sandbox's controls. -->
+        <Grid>
+
+          <ScrollViewer x:Name="StepPane" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="18,16,18,18">
+              <TextBlock x:Name="ScenarioName" Classes="section" Margin="0,0,0,2"/>
+              <TextBlock x:Name="StepTitle" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
+              <TextBlock x:Name="StepText" FontSize="12.5" TextWrapping="Wrap" LineHeight="19"
+                         Opacity="0.82" Margin="0,10,0,0"/>
+
+              <Grid ColumnDefinitions="*,Auto" Margin="0,20,0,6">
+                <TextBlock Grid.Column="0" Classes="section" Margin="0" Text="THE CODE"/>
+                <Button Grid.Column="1" x:Name="CopyCode" Content="Copy" FontSize="11" Padding="8,2"/>
+              </Grid>
+
+              <Border Background="#0b0e14" CornerRadius="6" Padding="12,10">
+                <SelectableTextBlock x:Name="StepCode" FontSize="12" LineHeight="18"
+                                     FontFamily="avares://AvaTerminal.Demo/Fonts#JetBrains Mono NL"/>
+              </Border>
+
+              <TextBlock x:Name="PtyNote" Classes="hint" IsVisible="False"/>
+            </StackPanel>
+          </ScrollViewer>
+
+          <ScrollViewer x:Name="SandboxPane" IsVisible="False" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="16,4,16,16">
+
+              <TextBlock Classes="section" Text="SESSION"/>
+              <ComboBox x:Name="Sessions" HorizontalAlignment="Stretch"/>
+              <TextBlock x:Name="SessionNote" Classes="hint"/>
+              <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                <Button x:Name="Restart" Content="Restart" FontSize="12"/>
+                <Button x:Name="StopIt" Content="Stop" FontSize="12"/>
+                <Button x:Name="Interrupt" Content="Ctrl-C" FontSize="12"
+                        ToolTip.Tip="Signal(PtySignal.Int)"/>
+              </StackPanel>
+              <TextBlock x:Name="HostNote" Classes="hint"/>
+
+              <TextBlock Classes="section" Text="APPEARANCE"/>
+              <Grid ColumnDefinitions="86,*" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="Font"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="Fonts" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" x:Name="FontSizeLabel"
+                           Margin="0,8,0,0"/>
+                <Slider Grid.Row="1" Grid.Column="1" x:Name="FontSizeSlider" Minimum="8" Maximum="28"
+                        TickFrequency="1" IsSnapToTickEnabled="True" Margin="0,4,0,0"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Classes="field" Text="Theme"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="Themes" HorizontalAlignment="Stretch"/>
+              </Grid>
+              <TextBlock x:Name="FontNote" Classes="hint"/>
+
+              <TextBlock Classes="section" Text="SIZE"/>
+              <CheckBox x:Name="AutoSize" Content="AutoSize — the console follows the control"
+                        FontSize="12"/>
+              <Grid ColumnDefinitions="86,*" RowDefinitions="Auto,Auto" Margin="0,4,0,0">
+                <TextBlock Grid.Row="0" Grid.Column="0" Classes="field" Text="Columns"/>
+                <NumericUpDown Grid.Row="0" Grid.Column="1" x:Name="Columns" Minimum="20" Maximum="400"
+                               Increment="1" FormatString="0" FontSize="12"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Classes="field" Text="Rows" Margin="0,6,0,0"/>
+                <NumericUpDown Grid.Row="1" Grid.Column="1" x:Name="Rows" Minimum="5" Maximum="200"
+                               Increment="1" FormatString="0" FontSize="12" Margin="0,6,0,0"/>
+              </Grid>
+              <TextBlock Classes="hint"
+                         Text="Writing to Columns or Rows pins the size and turns AutoSize off — the property is both the question and the answer."/>
+
+              <TextBlock Classes="section" Text="SEND"/>
+              <TextBox x:Name="ToSend" PlaceholderText="type a line, then Return" FontSize="12"/>
+              <TextBlock Classes="hint"
+                         Text="Send(text) types into whatever is running. It deliberately does not raise Input, or an application that broadcast one terminal's input to the others would have written a loop."/>
+
+              <TextBlock Classes="section" Text="FEED — ESCAPE SEQUENCES"/>
+              <StackPanel x:Name="Plays"/>
+              <TextBlock x:Name="PlayNote" Classes="hint"/>
+
+              <TextBlock Classes="section" Text="EVENTS"/>
+              <CheckBox x:Name="LogInput" Content="log what is typed (Input)" FontSize="12"/>
+              <Button x:Name="ReadScreen" Content="Read the screen" FontSize="12" Margin="0,6,0,0"
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                      ToolTip.Tip="Screen.GetScreenText()"/>
+              <Button x:Name="ClearLog" Content="Clear the log" FontSize="12" Margin="0,4,0,0"
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+
+            </StackPanel>
+          </ScrollViewer>
+
+        </Grid>
+      </Border>
 
     </Grid>
   </DockPanel>

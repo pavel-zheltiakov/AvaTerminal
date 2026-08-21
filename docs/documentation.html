@@ -332,10 +332,38 @@ terminal.TerminalFontSize = 13;</code></pre>
 
   <table>
     <tr><th>Builtin</th><th></th></tr>
-    <tr><td><code>cd [dir]</code></td><td>Changes the shell's directory. <code>~</code> is expanded; no argument means home.</td></tr>
+    <tr><td><code>cd [dir]</code></td><td>Changes the shell's directory. <code>~</code> is expanded; no argument means home. <strong>This is the one that has to be a builtin</strong> — a separate process cannot change its parent's directory.</td></tr>
     <tr><td><code>pwd</code></td><td>Prints it.</td></tr>
+    <tr><td><code>export NAME=value</code></td><td>Sets a variable for the programs this shell runs. With no arguments, lists what has been set.</td></tr>
+    <tr><td><code>unset NAME</code></td><td>Takes it away again.</td></tr>
+    <tr><td><code>which NAME</code></td><td>Where that command would come from — the shell's own <code>PATH</code> search, made visible.</td></tr>
+    <tr><td><code>type NAME</code></td><td>The same, and says when a name is a builtin rather than a file.</td></tr>
+    <tr><td><code>history</code></td><td>The lines you have run. The up arrow walks the same list.</td></tr>
+    <tr><td><code>clear</code></td><td>Erases the screen.</td></tr>
     <tr><td><code>exit</code></td><td>Ends the shell, which raises <code>Exited(0)</code> on the control.</td></tr>
-    <tr><td><code>help</code></td><td>Lists the four of them.</td></tr>
+    <tr><td><code>help</code></td><td>Lists all ten, and what is deliberately missing.</td></tr>
+  </table>
+
+  <div class="note">
+    <strong>Everything else is a program on disk.</strong> <code>mkdir</code>, <code>rm</code>,
+    <code>cp</code>, <code>mv</code>, <code>grep</code>, <code>find</code>, <code>git</code>,
+    <code>python</code> — none of these are commands anywhere. They are files in <code>/bin</code>
+    and <code>/usr/bin</code>, and the shell finds them on <code>PATH</code> and runs them. There is
+    nothing to add to this shell to make them work.
+  </div>
+
+  <h3>Patterns</h3>
+  <p>
+    <code>ls *.txt</code> does not hand <code>ls</code> a pattern: the shell replaces the word with
+    every matching name <em>before</em> the program starts. That is why every program on the system
+    understands patterns without knowing what one is.
+  </p>
+  <table>
+    <tr><td><code>*</code> and <code>?</code></td><td>Expanded in the last segment of a path.</td></tr>
+    <tr><td><code>"*.txt"</code></td><td>Quoted, so not expanded — which is how you name a file that really is called that.</td></tr>
+    <tr><td>no match</td><td>The word is passed through as it was typed, as <code>bash</code> does. The program then reports the name it was given.</td></tr>
+    <tr><td><code>.hidden</code></td><td>A leading dot is not matched by a pattern that does not have one — the reason <code>rm *</code> does not take your configuration with it.</td></tr>
+    <tr><td>not implemented</td><td>Character classes (<code>[a-z]</code>), <code>**</code>, and patterns in the directory part.</td></tr>
   </table>
 
   <table>
@@ -348,10 +376,11 @@ terminal.TerminalFontSize = 13;</code></pre>
   </table>
 
   <div class="note warn">
-    <strong>What it is not.</strong> There are no pipes, no redirection, no globbing, no variables,
-    no job control and no scripting. Each of those is a language feature, and a shell that has them
-    is a shell somebody spent years on. Quoting <em>is</em> handled — <code>cd "My Documents"</code>
-    works — because a line copied out of a terminal has to mean here what it meant there.
+    <strong>What it is not.</strong> There are no pipes, no redirection, no <code>$variables</code>,
+    no <code>&amp;&amp;</code>, no job control and no scripting. Each of those is a language feature,
+    and a shell that has them is a shell somebody spent years on. Quoting <em>is</em> handled —
+    <code>cd "My Documents"</code> works — because a line copied out of a terminal has to mean here
+    what it meant there.
   </div>
 
   <p>
